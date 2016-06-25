@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+  <link rel="stylesheet" href="/slow/300/style" />
+  <script src="/slow/300/script"></script>
+  <script>
+
+    console.time('content loaded')
+    console.time('third content loaded event')
+    console.time('received first sync response (inline)')
+    console.time('received second sync response (domContentLoaded)')
+    console.time('received async response (inline)')
+    console.time('window loaded')
+
+    window.addEventListener('DOMContentLoaded', () => {
+      console.timeEnd('content loaded')
+    })
+
+    window.addEventListener('load', () => {
+      console.timeEnd('window loaded')
+    })
+
+  </script>
+</head>
+<body>
+  <h1>Page Title</h1>
+  <img src="/slow/300/image"/>
+
+  <script>
+    var xhr = new XMLHttpRequest()
+    xhr.open('get', '/slow/500/data', false)
+    xhr.send(null)
+    console.timeEnd('received first sync response (inline)')
+  </script>
+
+  <script>
+    fetch('/slow/300/data')
+      .then((data) => console.timeEnd('received async response (inline)'))
+  </script>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      var xhr = new XMLHttpRequest()
+      xhr.open('get', '/slow/5000/data', false)
+      xhr.send(null)
+      console.timeEnd('received second sync response (domContentLoaded)')
+    })
+  </script>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      console.timeEnd('third content loaded event')
+    })
+  </script>
+  <h1>Page Footer</h1>
+</body>
+</html>
